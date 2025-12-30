@@ -5,19 +5,19 @@ It demonstrates article scraping, API development, AI-based content enhancement,
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 
 The project is divided into three phases:
 
-- **Phase 1**: Backend APIs to scrape and manage blog articles  
-- **Phase 2**: A Node.js script to enhance articles using Google search results and an LLM  
-- **Phase 3**: A React frontend to display original and enhanced articles  
+- Phase 1: Backend APIs to scrape and manage blog articles  
+- Phase 2: A Node.js script to enhance articles using Google search results and an LLM  
+- Phase 3: A React frontend to display original and enhanced articles  
 
 The system scrapes articles from BeyondChats blogs, enhances them using reference articles, and displays them in a professional UI.
 
 ---
 
-## ✨ Features
+## Features
 
 - Scrapes the 5 oldest articles from BeyondChats blogs  
 - Stores articles in a database  
@@ -30,7 +30,7 @@ The system scrapes articles from BeyondChats blogs, enhances them using referenc
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend (Phase 1)
 - Laravel (PHP)
@@ -51,7 +51,7 @@ The system scrapes articles from BeyondChats blogs, enhances them using referenc
 
 ---
 
-## 🔄 Data Flow (Simple)
+## Data Flow (Simple)
 
 - Backend scrapes articles from BeyondChats blogs and stores them in the database  
 - Node.js script:
@@ -74,7 +74,7 @@ beyondchats/
 
 ---
 
-## ⚙️ Local Setup Instructions
+## Local Setup Instructions
 
 ### Prerequisites
 - PHP >= 8.1
@@ -108,7 +108,7 @@ npm start
 
 http://localhost:3000
 
-API Endpoints
+### API Endpoints 
 
 GET /api/articles – Get all articles
 
@@ -120,7 +120,7 @@ PUT /api/articles/{id} – Update an article
 
 DELETE /api/articles/{id} – Delete an article
 
-Live Demo
+### Live Demo
 
 Frontend deployment is not available yet.
 The complete project can be run locally using the setup instructions above.
