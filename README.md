@@ -64,7 +64,7 @@ The system scrapes articles from BeyondChats blogs, enhances them using referenc
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 beyondchats/
 ├── backend/ # Laravel backend APIs
