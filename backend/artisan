@@ -1,0 +1,71 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// MongoDB is initialized through Article model when needed
+
+// Run migrations (MongoDB doesn't need schema migrations, but we'll create indexes)
+if (isset($argv[1]) && $argv[1] === 'migrate') {
+    echo "Setting up MongoDB collections and indexes...\n";
+    
+    try {
+        // Check if MongoDB extension is installed
+        if (!extension_loaded('mongodb')) {
+            echo "⚠️  MongoDB extension not installed. Skipping migration.\n";
+            echo "   Please install MongoDB PHP extension first.\n";
+            echo "   See: INSTALL_MONGODB_EXTENSION_WINDOWS.md\n";
+            exit(0);
+        }
+        
+        require __DIR__ . '/app/Database/MongoDBConnection.php';
+        $db = \App\Database\MongoDBConnection::getDatabase();
+        $collection = $db->selectCollection('articles');
+        
+        // Create indexes
+        $collection->createIndex(['url' => 1], ['unique' => true]);
+        $collection->createIndex(['slug' => 1], ['unique' => true]);
+        $collection->createIndex(['created_at' => -1]);
+        
+        echo "✓ MongoDB collection 'articles' setup complete with indexes!\n";
+    } catch (\Exception $e) {
+        echo "✗ Error: " . $e->getMessage() . "\n";
+        echo "   Make sure MongoDB is running and connection is configured in .env\n";
+        exit(1);
+    }
+}
+
+if (isset($argv[1]) && $argv[1] === 'scrape:articles') {
+    echo "Scraping articles from beyondchats.com...\n";
+    
+    $scraper = new \App\Services\ScraperService();
+    $articles = $scraper->scrapeOldestArticles(5);
+    
+    $created = 0;
+    foreach ($articles as $articleData) {
+        $existing = \App\Models\Article::where('url', $articleData['url'])->first();
+        
+        if (!$existing) {
+            \App\Models\Article::create([
+                'title' => $articleData['title'],
+                'content' => $articleData['content'],
+                'original_content' => $articleData['content'],
+                'url' => $articleData['url'],
+                'slug' => $articleData['slug'],
+                'is_enhanced' => false,
+            ]);
+            $created++;
+            echo "✓ Created: {$articleData['title']}\n";
+        } else {
+            echo "⊘ Skipped (exists): {$articleData['title']}\n";
+        }
+    }
+    
+    echo "\n✓ Scraping completed! Created {$created} new article(s).\n";
+}
+
